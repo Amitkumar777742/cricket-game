@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Bat Ball Stump Game</h1>
+
+    <button onclick="
+    computerChoice = generateComputerChoice();
+    resultMsg = getResult('bat', computerChoice);
+    showResult('bat', computerChoice, resultMsg);
+    "> <img src="bat.jpg" alt="bat-image" class="bat-choice"
+    height="100px"width=100px></button>
+
+    <button onclick="
+    let computerChoice = generateComputerChoice();
+    let resultMsg = getResult('ball', computerChoice);
+    showResult('ball', computerChoice, resultMsg);
+    "> <img src="ball image.jpeg" alt="ball-image" class="ball-choice"
+    height="100px"width=100px> </button>
+
+    <button onclick="
+    computerChoice = generateComputerChoice();
+     resultMsg = getResult('stump', computerChoice);
+    showResult('stump', computerChoice, resultMsg);
+    "> <img src="stump.jpg" alt="stump-image" class="stump"
+    height="100px"width=100px></button>
+
+    
+    <h3 id="user-Move"></h3>
+    <h3 id="computer-Move"></h3>
+    <h3 id="result"></h3>
+    <h3 id="score"></h3>
+
+    <button onclick="localStorage.clear(); resetScore();"> <img src="reset-button_592324-8772.avif" alt="reset-image" class="reset-choice"
+        height="100px"width=100px> </button>
+
+
+    <script>
+        // Retrieve score from localStorage or initialize a new score
+        let scoreStr = localStorage.getItem('Score');
+        let score;
+        resetScore(scoreStr);
+
+        // Function to reset or initialize the score
+        function resetScore(scoreStr) {
+            score = scoreStr ? JSON.parse(scoreStr) : {
+                win: 0,
+                lost: 0,
+                tie: 0
+            };
+
+            // Ensure displayScore is always attached to the score object
+            score.displayScore = function() {
+                return `Score: ${score.win}, Lost: ${score.lost}, Tie: ${score.tie}`;
+            };
+            showResult();
+        }
+
+        // Function to generate computer's choice randomly
+        function generateComputerChoice() {
+            let randomNumber = Math.floor(Math.random() * 3); // Use Math.floor to generate integer 0, 1, or 2
+            if (randomNumber === 0) {
+                return 'bat';
+            } else if (randomNumber === 1) {
+                return 'ball';
+            } else {
+                return 'stump';
+            }
+        }
+
+        // Function to determine the result based on user and computer moves
+        function getResult(userMove, computerMove) {
+            if (userMove === 'bat') {
+                if (computerMove === 'ball') {
+                    score.win++;
+                    return 'User won';
+                } else if (computerMove === 'bat') {
+                    score.tie++;
+                    return `It's a tie`;
+                } else if (computerMove === 'stump') {
+                    score.lost++;
+                    return 'Computer won';
+                }
+            } else if (userMove === 'ball') {
+                if (computerMove === 'ball') {
+                    score.tie++;
+                    return `It's a tie`;
+                } else if (computerMove === 'bat') {
+                    score.lost++;
+                    return 'Computer won';
+                } else if (computerMove === 'stump') {
+                    score.win++;
+                    return 'User won';
+                }
+            } else {
+                if (computerMove === 'ball') {
+                    score.lost++;
+                    return 'Computer won';
+                } else if (computerMove === 'bat') {
+                    score.win++;
+                    return 'User won';
+                } else if (computerMove === 'stump') {
+                    score.tie++;
+                    return `It's a tie`;
+                }
+            }
+        }
+
+        // Function to show the result and update the score in localStorage
+        function showResult(userMove, computerMove, result) {
+        localStorage.setItem('score', JSON.stringify(score)); 
+            document.querySelector('#user-Move').innerText =
+            userMove !== undefined ? `you have chosen ${userMove}`:'';
+            document.querySelector('#computer-Move').innerText =
+            computerMove !== undefined ?`computer choice is ${computerChoice}`:'';
+            document.querySelector('#result').innerText =
+            result ||'';
+            document.querySelector('#score').innerText =score.displayScore();
+            
+        }
+    </script>
+</body>
+</html>
